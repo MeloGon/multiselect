@@ -27,7 +27,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   List<String> selected = [];
 
   @override
@@ -37,12 +36,13 @@ class _HomeState extends State<Home> {
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: DropDownMultiSelect(
+          color: Colors.blueGrey,
           onChanged: (List<String> x) {
             setState(() {
-              selected =x;
+              selected = x;
             });
           },
-          options: ['a' , 'b' , 'c' , 'd'],
+          options: ['a', 'b', 'c', 'd'],
           selectedValues: selected,
           whenEmpty: 'Select Something',
         ),

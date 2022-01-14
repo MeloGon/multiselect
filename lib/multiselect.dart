@@ -11,12 +11,16 @@ class _SelectRow extends StatelessWidget {
   final Function(bool) onChange;
   final bool selected;
   final String text;
+  final Color checkColor;
+  final TextStyle? itemStyle;
 
   const _SelectRow(
       {Key? key,
       required this.onChange,
       required this.selected,
-      required this.text})
+      required this.text,
+      required this.checkColor,
+      this.itemStyle})
       : super(key: key);
 
   @override
@@ -24,12 +28,16 @@ class _SelectRow extends StatelessWidget {
     return Row(
       children: [
         Checkbox(
+            checkColor: checkColor,
             value: selected,
             onChanged: (x) {
               onChange(x!);
               _theState.notify();
             }),
-        Text(text)
+        Text(
+          text,
+          style: itemStyle,
+        )
       ],
     );
   }
@@ -73,6 +81,15 @@ class DropDownMultiSelect extends StatefulWidget {
   /// defines whether the widget is read-only
   final bool readOnly;
 
+  /// defines styles of text inside of multiselect
+  final TextStyle? style;
+
+  /// define color of checkbox
+  final Color color;
+
+  /// styles of items
+  final TextStyle? styleItem;
+
   const DropDownMultiSelect({
     Key? key,
     required this.options,
@@ -86,6 +103,9 @@ class DropDownMultiSelect extends StatefulWidget {
     this.decoration,
     this.validator,
     this.readOnly = false,
+    this.style,
+    this.styleItem,
+    required this.color,
   }) : super(key: key);
 
   @override
@@ -105,10 +125,13 @@ class _DropDownMultiSelectState extends State<DropDownMultiSelect> {
                   child: Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                      child: Text(widget.selectedValues.length > 0
-                          ? widget.selectedValues
-                              .reduce((a, b) => a + ' , ' + b)
-                          : widget.whenEmpty ?? '')),
+                      child: Text(
+                        widget.selectedValues.length > 0
+                            ? widget.selectedValues
+                                .reduce((a, b) => a + ' , ' + b)
+                            : widget.whenEmpty ?? '',
+                        style: widget.style,
+                      )),
                   alignment: Alignment.centerLeft)),
           Align(
             alignment: Alignment.centerLeft,
@@ -142,8 +165,10 @@ class _DropDownMultiSelectState extends State<DropDownMultiSelect> {
                           return widget.menuItembuilder != null
                               ? widget.menuItembuilder!(x)
                               : _SelectRow(
+                                  checkColor: widget.color,
                                   selected: widget.selectedValues.contains(x),
                                   text: x,
+                                  itemStyle: widget.styleItem,
                                   onChange: (isSelected) {
                                     if (isSelected) {
                                       var ns = widget.selectedValues;
